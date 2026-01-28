@@ -25,17 +25,12 @@ class PostController extends Controller
         'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // التحقق من صحة الصور
     ]);
 
-    // حفظ المنشور
     $post = auth()->user()->posts()->create($request->only('content'));
 
-    // إذا كانت هناك صور، قم بحفظها بالطريقة التي تم شرحها
     if ($request->hasFile('images')) {
         foreach ($request->file('images') as $image) {
-            // استخدام الطريقة التي تم شرحها لحفظ الصورة
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images/posts'), $imageName);
-
-            // حفظ مسار الصورة في قاعدة البيانات
             $post->images()->create(['image_path' => 'images/posts/' . $imageName]);
         }
     }
@@ -55,17 +50,13 @@ class PostController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // التحقق من صحة الصور
         ]);
     
-        // تحديث المحتوى
         $post->update($request->only('content'));
     
-        // إذا كانت هناك صور جديدة، قم بحفظها بالطريقة التي تم شرحها
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                // استخدام الطريقة التي تم شرحها لحفظ الصورة
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('images/posts'), $imageName);
     
-                // حفظ مسار الصورة في قاعدة البيانات
                 $post->images()->create(['image_path' => 'images/posts/' . $imageName]);
             }
         }
