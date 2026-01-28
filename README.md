@@ -23,7 +23,6 @@ A Laravel-based social application skeleton. This repository provides a foundati
 
 ## Features
 
-(Adjust this list to reflect what this project actually implements.)
 
 - User authentication (registration, login, password reset)
 - User profiles and avatars
@@ -37,7 +36,7 @@ A Laravel-based social application skeleton. This repository provides a foundati
 ## Tech stack
 
 - Laravel (PHP framework)
-- MySQL / MariaDB (or any DB supported by Laravel)
+- MySQL
 - Composer for PHP dependencies
 - Node.js + npm (or yarn) for frontend tooling (Vite / Mix)
 - Optional: Laravel Sail / Docker for containerized environment
@@ -105,7 +104,7 @@ php artisan serve
 # The app will be available at http://127.0.0.1:8000
 ```
 
-## Docker / Sail (optional)
+## Sail
 
 If you prefer using Laravel Sail (Docker), and Sail is configured in the repository:
 
@@ -168,69 +167,4 @@ MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
 MAIL_FROM_ADDRESS="hello@example.com"
 MAIL_FROM_NAME="${APP_NAME}"
-```
 
-Add other service credentials (S3, Pusher, etc.) as required by the project.
-
-## Seeding and demo data
-
-If the repository includes seeders that generate demo users and posts:
-
-```bash
-php artisan db:seed
-```
-
-Or run a specific seeder:
-
-```bash
-php artisan db:seed --class=DemoSeeder
-```
-
-## Common tasks
-
-- Clear caches:
-
-```bash
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-php artisan cache:clear
-```
-
-- Queue worker (if using queues):
-
-```bash
-php artisan queue:work
-```
-
-- Run scheduled tasks locally:
-
-```bash
-php artisan schedule:run
-```
-
-## Contributing
-
-Contributions are welcome. Typical workflow:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feat/my-feature`
-3. Make your changes and tests
-4. Submit a pull request describing your change
-
-Please follow any coding standards or guidelines present in the repo.
-
-## License
-
-Specify the license used by the project (e.g., MIT). If no license exists, add one to clarify reuse terms.
-
-## Contact
-
-For questions or help, open an issue in this repository or contact the maintainer.
-
----
-
-If you'd like, I can:
-- Tailor this README to match the exact implemented features of your repo (I can scan the code and list real features and commands).
-- Create and commit this README to the repository for you (I can do that if you want; tell me to push to a branch and provide any commit message).
-```
