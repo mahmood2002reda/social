@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use App\Models\Comment;
+use Modules\Post\Entities\Post;
+use Modules\Post\Entities\Comment;
+
 use App\Events\CommentAdded;
 use Illuminate\Http\Request;
 

@@ -1,0 +1,6 @@
+{
+    "User": true,
+    "Post": true,
+    "Profile": true,
+    "Friendship": true
+}

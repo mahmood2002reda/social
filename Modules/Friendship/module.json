@@ -1,0 +1,11 @@
+{
+    "name": "Friendship",
+    "alias": "friendship",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Friendship\\Providers\\FriendshipServiceProvider"
+    ],
+    "files": []
+}
