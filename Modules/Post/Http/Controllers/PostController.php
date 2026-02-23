@@ -1,18 +1,18 @@
 <?php
-
 namespace Modules\Post\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Post\Entities\Post;
+use Modules\Post\Services\PostService;
 
 class PostController extends Controller
 {
+    public function __construct(private PostService $postService) {}
 
     public function index()
     {
-        $posts = Post::with(['user', 'comments', 'likes'])->latest()->get();
+        $posts = $this->postService->getAllPosts();
         return view('posts.index', compact('posts'));
     }
 
@@ -22,24 +22,16 @@ class PostController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'content' => 'required|string',
-        'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048' 
-    ]);
+    {
+        $request->validate([
+            'content' => 'required|string',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
 
-    $post = auth()->user()->posts()->create($request->only('content'));
+        $this->postService->store($request);
 
-    if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $image) {
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/posts'), $imageName);
-            $post->images()->create(['image_path' => 'images/posts/' . $imageName]);
-        }
+        return redirect()->route('posts.index');
     }
-
-    return redirect()->route('posts.index');
-}
 
     public function edit(Post $post)
     {
@@ -50,28 +42,17 @@ class PostController extends Controller
     {
         $request->validate([
             'content' => 'required|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048' 
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-    
-        $post->update($request->only('content'));
-    
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('images/posts'), $imageName);
-    
-                $post->images()->create(['image_path' => 'images/posts/' . $imageName]);
-            }
-        }
-    
+
+        $this->postService->update($request, $post);
+
         return redirect()->route('posts.index');
     }
-    
 
     public function destroy(Post $post)
     {
-        $post->delete();
-
+        $this->postService->delete($post);
         return back();
     }
 }

@@ -1,14 +1,14 @@
 <?php
-
 namespace Modules\Profile\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Profile\Services\ProfileService;
 
 class ProfileController extends Controller
 {
+    public function __construct(private ProfileService $service) {}
 
     public function create()
     {
@@ -16,59 +16,41 @@ class ProfileController extends Controller
     }
 
     public function store(Request $request)
-{
-    $data = $request->validate([
-        'bio' => 'required|string|max:255',
-        'profile_picture' => 'nullable|image',
-    ]);
+    {
+        $data = $request->validate([
+            'bio' => 'required|string|max:255',
+            'profile_picture' => 'nullable|image',
+        ]);
 
-    $imageName = null;
-    if ($request->hasFile('profile_picture')) {
-        $image = $request->file('profile_picture');
-        $imageName = time() . '.' . $image->getClientOriginalExtension();
-        $image->move(public_path('images/profile'), $imageName);
-        
-        $data['profile_picture'] = 'images/profile/' . $imageName;
+        $this->service->createProfile(auth()->user(), $data, $request->file('profile_picture'));
+
+        return redirect()->route('home')->with('status', 'Profile created successfully!');
     }
 
-    auth()->user()->profile()->create($data);
-
-    return redirect()->route('home')->with('status', 'Profile created successfully!');
-}
-
-    public function show(User $user) {
-        return view('profiles.show', compact('user'));
+    public function show(User $user)
+    {
+        $profile = $this->service->getProfile($user);
+        return view('profiles.show', compact('user', 'profile'));
     }
 
-    public function edit(User $user) {
-        return view('profiles.edit', compact('user'));
+    public function edit(User $user)
+    {
+        $profile = $this->service->getProfile($user);
+        return view('profiles.edit', compact('user', 'profile'));
     }
 
     public function update(Request $request, User $user)
     {
-      //  dd($request->all());
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'bio' => 'nullable|string|max:500',
             'profile_picture' => 'nullable|image',
         ]);
-    
-        if ($request->hasFile('profile_picture')) {
-           if (optional($user->profile)->profile_picture && file_exists(public_path($user->profile->profile_picture))) {
-               unlink(public_path($user->profile->profile_picture));
-}
-    
-            $image = $request->file('profile_picture');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/profile'), $imageName);
-    
-            $data['profile_picture'] = 'images/profile/' . $imageName;
-        }
-    
-        $user->profile->update($data);
-        
-        return redirect()->route('profile.show', $user)->with('status', 'Profile updated successfully!');
+
+        $this->service->updateProfile($user, $data, $request->file('profile_picture'));
+
+        return redirect()->route('profile.show', $user)
+                         ->with('status', 'Profile updated successfully!');
     }
-    
 }
