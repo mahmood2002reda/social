@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Modules\User\Entities\User;
 
 class Post extends Model
 {
@@ -33,9 +34,8 @@ class Post extends Model
         return $this->hasMany(Like::class);
     }
 
-    // للتحقق إذا كان المستخدم قد أعجب بالمنشور
-    public function isLikedBy(User $user)
-    {
-        return $this->likes()->where('user_id', $user->id)->exists();
-    }
+    // public function isLikedBy(User $user)
+    // {
+    //     return $this->likes()->where('user_id', $user->id)->exists();
+    // }
 }

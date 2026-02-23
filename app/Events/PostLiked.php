@@ -7,8 +7,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Post;
 use App\Models\User;
+
+use Modules\Post\Entities\Post;
 
 class PostLiked implements ShouldBroadcast
 {
@@ -23,6 +24,7 @@ class PostLiked implements ShouldBroadcast
         $this->post = $post;
         $this->user = $user;
         $this->likesCount = $likesCount;
+        
     }
 
     public function broadcastOn()
