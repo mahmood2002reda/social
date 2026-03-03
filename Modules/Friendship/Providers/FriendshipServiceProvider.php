@@ -2,8 +2,10 @@
 
 namespace Modules\Friendship\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Support\ServiceProvider;
+use Modules\Friendship\Repositories\FriendshipRepository;
+use Modules\Friendship\Repositories\FriendshipRepositoryInterface;
 
 class FriendshipServiceProvider extends ServiceProvider
 {
@@ -38,6 +40,8 @@ class FriendshipServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->bind(FriendshipRepositoryInterface::class, FriendshipRepository::class);
+
     }
 
     /**

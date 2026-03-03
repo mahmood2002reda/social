@@ -2,16 +2,24 @@
 
 namespace Modules\Post\Entities;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Friendship extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
-    
-    protected static function newFactory()
+    protected $fillable = ['user_id', 'friend_id', 'accepted'];
+
+    public function user()
     {
+        return $this->belongsTo(User::class);
+    }
+
+    public function friend()
+    {
+        return $this->belongsTo(User::class, 'friend_id');
     }
 }
+

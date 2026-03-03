@@ -1,124 +1,67 @@
 <?php
-
 namespace Modules\Friendship\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Friendship\Entities\Friendship;
+use Modules\Friendship\Services\FriendshipService;
 
 class FriendshipController extends Controller
 {
+    public function __construct(private FriendshipService $service) {}
+
     public function sendRequest(User $user)
     {
-        Friendship::create([
-            'user_id' => auth()->id(),
-            'friend_id' => $user->id,
-            'accepted' => false,
-        ]);
-
+        $this->service->sendRequest($user);
         return back()->with('success', 'Friend request sent.');
     }
 
-   public function acceptRequest(Friendship $friendship)
-   {
-       // تحديث حالة طلب الصداقة الأصلي ليصبح مقبولاً (accepted = true)
-       $friendship->update(['accepted' => true]);
-   
-       // إدخال صف جديد لعكس العلاقة بين الطرفين
-       Friendship::create([
-           'user_id' => $friendship->friend_id, // الطرف الذي قبل الطلب يصبح المرسل
-           'friend_id' => $friendship->user_id, // الطرف الذي أرسل الطلب يصبح المستلم
-           'accepted' => true, // الصداقة مقبولة
-       ]);
-   
-       return back()->with('success', 'Friend request accepted. You are now friends.');
-   }
-   
+    public function acceptRequest(Friendship $friendship)
+    {
+        $this->service->acceptRequest($friendship);
+        return back()->with('success', 'Friend request accepted. You are now friends.');
+    }
 
     public function rejectRequest(Friendship $friendship)
     {
-        $friendship->delete();
-
+        $this->service->rejectRequest($friendship);
         return back()->with('success', 'Friend request rejected.');
     }
 
-   
+    public function unfriend(User $user)
+    {
+        $this->service->unfriend($user);
+        return back()->with('success', 'Friendship removed.');
+    }
+
+    public function cancel(User $user)
+    {
+        $this->service->cancel($user);
+        return back()->with('success', 'Friend request cancelled.');
+    }
 
     public function friendRequests()
     {
-        // Get all friend requests received by the authenticated user that are not yet accepted
-        $friendRequests = auth()->user()->receivedFriendRequests()->where('accepted', false)->get();
-
-        return view('friends.requests', compact('friendRequests'));
+        $friendRequests = $this->service->friendRequests();
+        return view('friendship::friends.requests', compact('friendRequests'));
     }
 
     public function friends(User $user)
     {
-        // جلب الأصدقاء المقبولين
-        $friends = $user->friends;
-        
-        return view('friends.index', compact('friends', 'user'));
+        $friends = $this->service->friends($user);
+        return view('friendship::friends.index', compact('friends', 'user'));
     }
-    
-    
-    
 
     public function search(Request $request)
-{
-    $query = $request->input('query');
-
-    // البحث عن المستخدمين بناءً على الاسم المدخل
-    $users = User::where('name', 'LIKE', "%{$query}%")
-                 ->where('id', '!=', auth()->id()) // استثناء المستخدم الحالي من النتائج
-                 ->get();
-
-    // تعديل مسار العرض إلى داخل مجلد friends
-    return view('friends.search-results', compact('users'));
-}
-
-
-public function show(User $user)
-{
-    
-    // الحصول على منشورات المستخدم
-    $posts = $user->posts()->latest()->get();
-
-    // تعديل مسار العرض إلى داخل مجلد friends
-    return view('friends.profile', compact('user', 'posts'));
-}
-public function unfriend(User $user)
-{
-    // البحث عن الصداقة
-    $friendship = Friendship::where(function ($query) use ($user) {
-        $query->where('user_id', auth()->id())
-              ->where('friend_id', $user->id);
-    })->orWhere(function ($query) use ($user) {
-        $query->where('user_id', $user->id)
-              ->where('friend_id', auth()->id());
-    })->first();
-
-    if ($friendship) {
-        $friendship->delete();
-        return back()->with('success', 'Friendship removed.');
+    {
+        $users = $this->service->search($request->input('query'));
+        return view('friendship::friends.search-results', compact('users'));
     }
 
-    return back()->with('error', 'Friendship not found.');
-}
-public function cancel(User $user)
-{
-    // البحث عن طلب الصداقة المرسل
-    $friendship = auth()->user()->sentFriendRequests()
-        ->where('friend_id', $user->id)
-        ->first();
-
-    if ($friendship) {
-        $friendship->delete(); // حذف طلب الصداقة
-        return back()->with('success', 'Friend request cancelled.');
+    public function show(User $user)
+    {
+        $posts = $this->service->show($user);
+        return view('friendship::friends.profile', compact('user', 'posts'));
     }
-
-    return back()->with('error', 'Friend request not found.');
-}
-
 }

@@ -6,3 +6,10 @@
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+.custom-navbar {
+    background-color: #101e46; // حط اللون اللي انت عايزه
+}
+.sidebar-sticky {
+    position: sticky;
+    top: 20px;   // المسافة من فوق
+}
