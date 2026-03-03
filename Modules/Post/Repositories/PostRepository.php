@@ -2,7 +2,10 @@
 
 namespace Modules\Post\Repositories;
 
+use Illuminate\Support\Facades\Auth;
+use Modules\Post\Entities\Friendship;
 use Modules\Post\Entities\Post;
+use Modules\Post\Entities\User;
 
 class PostRepository implements PostRepositoryInterface
 {
@@ -12,10 +15,16 @@ class PostRepository implements PostRepositoryInterface
             ->latest()
             ->get();
     }
-
-    public function create(array $data): Post
+     public function allFrinds(User $user)
     {
-        return auth()->user()->posts()->create($data);
+                return $user->friends;
+
+    }
+
+
+    public function create(array $data ,User $user): Post
+    {
+        return $user->posts()->create($data);
     }
 
     public function update(Post $post, array $data): Post

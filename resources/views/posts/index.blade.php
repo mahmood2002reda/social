@@ -2,9 +2,36 @@
 
 @section('content')
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Newsfeed</h1>
-        <a href="{{ route('posts.create') }}" class="btn btn-primary">Create Post</a>
+    <div class="row">
+
+       <!-- LEFT SIDEBAR (Friends) -->
+<div class="col-md-3">
+    <div class="sidebar-sticky">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header fw-bold">
+                Friends
+            </div>
+
+            <div class="card-body p-2">
+                @foreach($my_friend as $friend)
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="{{ asset($friend->profile?->profile_picture ?? 'images/default-avatar.png') }}"
+                             class="rounded-circle me-2"
+                             width="35"
+                             height="35">
+                        <span>{{ $friend->name }}</span>
+                    </div>
+                @endforeach
+            </div>
+
+        </div>
+    </div>
+</div>
+
+        <!-- CENTER (Newsfeed) -->
+        <div class="col-md-6">    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1></h1>
+        <a href="{{ route('posts.create') }}" class="btn btn-primary">New Post</a>
     </div>
 
     @foreach ($posts as $post)
@@ -23,11 +50,11 @@
             @if ($post->images && $post->images->count() > 0)
                 <div class="row mb-3">
                     @foreach ($post->images as $image)
-                        <div class="col-md-4 mb-2">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal{{ $image->id }}">
-                                <img src="{{ asset($image->image_path) }}" class="card-img-top" alt="Post Image" style="height: 200px; object-fit: cover;">
-                            </a>
-                        </div>
+                    <div class="text-center">
+    <img src="{{ asset($image->image_path) }}" 
+         class="img-fluid rounded"
+         style="height: 80%;width 80% ">
+</div>
 
                         <div class="modal fade" id="imageModal{{ $image->id }}" tabindex="-1" aria-labelledby="imageModalLabel{{ $image->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
@@ -60,10 +87,10 @@
 
             <div class="d-flex justify-content-around mb-3">
                <form
-    action="{{ route($post->isLikedBy(auth()->user()) ? 'post.unlike' : 'post.like', $post->id) }}"
+  action="{{ route($post->isLikedBy($user) ? 'post.unlike' : 'post.like', $post->id) }}"
     method="POST"
     class="me-2 like-form"
-    data-liked="{{ $post->isLikedBy(auth()->user()) ? 1 : 0 }}"
+    data-liked="{{ $post->isLikedBy($user) ? 1 : 0 }}"
 >
     @csrf
     <button
@@ -71,7 +98,7 @@
         class="btn btn-light btn-block text-primary"
         data-post-id="{{ $post->id }}"
     >
-        @if ($post->isLikedBy(auth()->user()))
+        @if ($post->isLikedBy($user))
             <i class="fas fa-thumbs-down"></i> Unlike
         @else
             <i class="fas fa-thumbs-up"></i> Like
@@ -138,6 +165,32 @@
         </div>
     </div>
     @endforeach
+            </div>
+                    <!-- RIGHT SIDEBAR -->
+        <div class="col-md-3">
+    <div class="sidebar-sticky">
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-bold">
+                    Shortcuts
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bookmark text-primary me-2"></i> Saved Posts
+                    </a>
+
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-video text-danger me-2"></i> Videos
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</div>
 </div>
 @endsection
 

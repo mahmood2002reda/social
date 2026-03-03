@@ -3,12 +3,12 @@
 namespace Modules\Post\Entities;
 
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Post\Entities\Comment;
 use Modules\Post\Entities\Like;
 use Modules\Post\Entities\PostImage;
+use Modules\Post\Entities\User;
 
 class Post extends Model
 {

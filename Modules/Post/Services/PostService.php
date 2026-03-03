@@ -3,6 +3,7 @@ namespace Modules\Post\Services;
 
 use Illuminate\Http\Request;
 use Modules\Post\Entities\Post;
+use Modules\Post\Entities\User;
 use Modules\Post\Repositories\PostRepositoryInterface;
 
 class PostService
@@ -13,10 +14,14 @@ class PostService
     {
         return $this->postRepo->all();
     }
-
-    public function store(Request $request): Post
+    public function getAllFriends(User $user )
     {
-        $post = $this->postRepo->create($request->only('content'));
+        return $this->postRepo->allFrinds($user);
+    }
+    public function store(Request $request , User $user): Post
+    {
+
+       $post = $this->postRepo->create($request->only('content'), $user);
 
         $this->uploadImages($request, $post);
 

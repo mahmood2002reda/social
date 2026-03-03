@@ -1,7 +1,8 @@
 <?php
 namespace Modules\Profile\Repositories;
 
-use App\Models\User;
+use Modules\Profile\Entities\User;
+
 
 interface ProfileRepositoryInterface
 {

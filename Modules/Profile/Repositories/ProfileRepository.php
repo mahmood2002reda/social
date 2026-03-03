@@ -1,7 +1,8 @@
 <?php
 namespace Modules\Profile\Repositories;
 
-use App\Models\User;
+use Modules\Profile\Entities\User;
+
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
@@ -12,6 +13,11 @@ class ProfileRepository implements ProfileRepositoryInterface
 
     public function updateProfile(User $user, array $data)
     {
+        if(!empty($data['name']))
+            {
+                $user->name=$data['name'];
+                $user->save();
+            }
         return $user->profile->update($data);
     }
 

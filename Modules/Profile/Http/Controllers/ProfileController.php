@@ -1,9 +1,9 @@
 <?php
 namespace Modules\Profile\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Profile\Entities\User;
 use Modules\Profile\Services\ProfileService;
 
 class ProfileController extends Controller
@@ -21,8 +21,9 @@ class ProfileController extends Controller
             'bio' => 'required|string|max:255',
             'profile_picture' => 'nullable|image',
         ]);
+        $user = User::find(auth()->id());
 
-        $this->service->createProfile(auth()->user(), $data, $request->file('profile_picture'));
+        $this->service->createProfile( $user, $data, $request->file('profile_picture'));
 
         return redirect()->route('home')->with('status', 'Profile created successfully!');
     }

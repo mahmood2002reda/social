@@ -1,7 +1,7 @@
 <?php
 namespace Modules\Profile\Services;
 
-use App\Models\User;
+use Modules\Profile\Entities\User;
 use Modules\Profile\Repositories\ProfileRepositoryInterface;
 
 class ProfileService

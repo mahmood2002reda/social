@@ -3,7 +3,9 @@ namespace Modules\Post\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Modules\Post\Entities\Post;
+use Modules\Post\Entities\User;
 use Modules\Post\Services\PostService;
 
 class PostController extends Controller
@@ -12,8 +14,13 @@ class PostController extends Controller
 
     public function index()
     {
+        $user = User::find(auth()->id());
         $posts = $this->postService->getAllPosts();
-        return view('posts.index', compact('posts'));
+        $my_friend =$this->postService->getAllFriends($user);
+// foreach ($my_friend as $friendship) {
+//    dd($friendship);
+// }
+            return view('posts.index', compact('posts' ,'my_friend','user'));
     }
 
     public function create()
@@ -27,8 +34,8 @@ class PostController extends Controller
             'content' => 'required|string',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
-        $this->postService->store($request);
+        $user = User::find(auth()->id());
+        $this->postService->store($request,$user);
 
         return redirect()->route('posts.index');
     }
