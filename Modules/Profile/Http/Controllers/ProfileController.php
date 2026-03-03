@@ -12,7 +12,7 @@ class ProfileController extends Controller
 
     public function create()
     {
-        return view('profiles.create');
+        return view('profile::profiles.create');
     }
 
     public function store(Request $request)
@@ -31,13 +31,13 @@ class ProfileController extends Controller
     public function show(User $user)
     {
         $profile = $this->service->getProfile($user);
-        return view('profiles.show', compact('user', 'profile'));
+        return view('profile::profiles.show', compact('user', 'profile'));
     }
 
     public function edit(User $user)
     {
         $profile = $this->service->getProfile($user);
-        return view('profiles.edit', compact('user', 'profile'));
+        return view('profile::profiles.edit', compact('user', 'profile'));
     }
 
     public function update(Request $request, User $user)

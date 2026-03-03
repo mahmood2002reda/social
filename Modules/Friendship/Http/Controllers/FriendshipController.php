@@ -44,24 +44,24 @@ class FriendshipController extends Controller
     public function friendRequests()
     {
         $friendRequests = $this->service->friendRequests();
-        return view('friends.requests', compact('friendRequests'));
+        return view('friendship::friends.requests', compact('friendRequests'));
     }
 
     public function friends(User $user)
     {
         $friends = $this->service->friends($user);
-        return view('friends.index', compact('friends', 'user'));
+        return view('friendship::friends.index', compact('friends', 'user'));
     }
 
     public function search(Request $request)
     {
         $users = $this->service->search($request->input('query'));
-        return view('friends.search-results', compact('users'));
+        return view('friendship::friends.search-results', compact('users'));
     }
 
     public function show(User $user)
     {
         $posts = $this->service->show($user);
-        return view('friends.profile', compact('user', 'posts'));
+        return view('friendship::friends.profile', compact('user', 'posts'));
     }
 }

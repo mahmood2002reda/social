@@ -20,12 +20,12 @@ class PostController extends Controller
 // foreach ($my_friend as $friendship) {
 //    dd($friendship);
 // }
-            return view('posts.index', compact('posts' ,'my_friend','user'));
+            return view('post::posts.index', compact('posts' ,'my_friend','user'));
     }
 
     public function create()
     {
-        return view('posts.create');
+        return view('post::posts.create');
     }
 
     public function store(Request $request)
@@ -42,7 +42,7 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
-        return view('posts.edit', compact('post'));
+        return view('post::posts.edit', compact('post'));
     }
 
     public function update(Request $request, Post $post)
